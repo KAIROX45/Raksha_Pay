@@ -1,0 +1,33 @@
+{
+  "model_version": "1.0.0-rf-baseline",
+  "algorithm": "RandomForestClassifier",
+  "features": [
+    "amount",
+    "tx_frequency_1h",
+    "recipient_familiarity",
+    "failed_attempts_24h",
+    "recipient_risk_flag",
+    "hour_of_day",
+    "is_late_night",
+    "historical_deviation"
+  ],
+  "metrics": {
+    "accuracy": 0.873,
+    "precision": 0.29081632653061223,
+    "recall": 0.3313953488372093,
+    "f1": 0.30978260869565216,
+    "roc_auc": 0.7727119485013485,
+    "train_samples": 8000,
+    "test_samples": 2000
+  },
+  "feature_importances": {
+    "amount": 0.21436517781138556,
+    "tx_frequency_1h": 0.08416899341000035,
+    "recipient_familiarity": 0.053088846574530425,
+    "failed_attempts_24h": 0.20699199716070416,
+    "recipient_risk_flag": 0.1095788182988267,
+    "hour_of_day": 0.11021310206771331,
+    "is_late_night": 0.009627142166733764,
+    "historical_deviation": 0.21196592251010585
+  }
+}

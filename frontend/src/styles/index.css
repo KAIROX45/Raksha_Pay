@@ -1,0 +1,122 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #080909;
+  --secondary-bg: #121414;
+  --metallic-gold: #D4AF37;
+  --champagne-gold: #F5D78E;
+  --text-white: #FFFFFF;
+  --text-secondary: #A5AAA5;
+
+  /* Theme tokens */
+  --primary: #D4AF37;
+  --secondary: #F5D78E;
+  --accent: #D4AF37;
+  --text: #FFFFFF;
+}
+
+body {
+  background-color: #080909;
+  color: #FFFFFF;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  overflow-x: hidden;
+  background-image: 
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(212, 175, 55, 0.12), transparent),
+    radial-gradient(circle at 100% 100%, rgba(212, 175, 55, 0.05), transparent);
+  background-attachment: fixed;
+}
+
+/* Custom Gold Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #080909;
+}
+::-webkit-scrollbar-thumb {
+  background: #D4AF37;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #F5D78E;
+}
+
+/* Luxury Glassmorphism */
+.glass-panel {
+  background: rgba(18, 20, 20, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(212, 175, 55, 0.22);
+}
+
+.glass-panel-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.glass-panel-hover:hover {
+  border-color: rgba(212, 175, 55, 0.55);
+  box-shadow: 0 10px 35px -5px rgba(212, 175, 55, 0.25);
+  transform: translateY(-2px);
+}
+
+.glass-card {
+  background: linear-gradient(135deg, rgba(22, 25, 25, 0.9) 0%, rgba(14, 16, 16, 0.95) 100%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  box-shadow: 0 12px 40px -10px rgba(0, 0, 0, 0.8), 0 0 20px -8px rgba(212, 175, 55, 0.15);
+}
+.glass-card:hover {
+  border-color: rgba(212, 175, 55, 0.45);
+}
+
+/* Luxury Metallic Gold Buttons */
+.gold-button {
+  background: linear-gradient(135deg, #F5D78E 0%, #D4AF37 50%, #B89225 100%);
+  color: #080909;
+  font-weight: 700;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 0 25px -4px rgba(212, 175, 55, 0.55), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+}
+.gold-button:hover {
+  background: linear-gradient(135deg, #FFF0CA 0%, #F5D78E 50%, #D4AF37 100%);
+  box-shadow: 0 0 35px 2px rgba(212, 175, 55, 0.75), inset 0 1px 1px rgba(255, 255, 255, 0.6);
+  transform: translateY(-1px);
+}
+.gold-button:active {
+  transform: translateY(0px);
+}
+
+.peach-button {
+  /* Backwards-compatible alias to gold-button */
+  background: linear-gradient(135deg, #F5D78E 0%, #D4AF37 50%, #B89225 100%);
+  color: #080909;
+  font-weight: 700;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 0 25px -4px rgba(212, 175, 55, 0.55), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+}
+.peach-button:hover {
+  background: linear-gradient(135deg, #FFF0CA 0%, #F5D78E 50%, #D4AF37 100%);
+  box-shadow: 0 0 35px 2px rgba(212, 175, 55, 0.75), inset 0 1px 1px rgba(255, 255, 255, 0.6);
+  transform: translateY(-1px);
+}
+.peach-button:active {
+  transform: translateY(0px);
+}
+
+/* Gold Text Glow & Gradients */
+.text-gold-gradient {
+  background: linear-gradient(135deg, #FFFFFF 0%, #F5D78E 40%, #D4AF37 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-glow-gold {
+  text-shadow: 0 0 15px rgba(212, 175, 55, 0.6);
+}
+
+.border-glow-gold {
+  box-shadow: 0 0 20px -3px rgba(212, 175, 55, 0.4);
+}
