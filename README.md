@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # RakshaPay — AI-Powered Smart Payment Security & Fraud Prevention Platform
 
 > **Pay Smart. Stay Protected.**  
@@ -256,3 +257,7 @@ backend/venv/Scripts/python -m pytest backend/tests/test_api.py -v
 
 Built for the RakshaPay Hackathon Demonstration.  
 *RakshaPay — Pay Smart. Stay Protected.*
+=======
+# Raksha_Pay
+RakshaPay is an AI-powered digital payment security platform designed to make UPI transactions safer with smart fraud detection, recipient verification, QR code security scanning, and real-time threat analysis. Featuring a premium Black &amp; Gold interface, RakshaPay aims to provide a smarter, safer, and more secure digital payment experience.
+>>>>>>> 17e8f0f562b206f963e5956e65385706b3877ba4
