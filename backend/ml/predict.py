@@ -8,7 +8,10 @@ import logging
 from typing import Dict, Any, Optional, Tuple
 import joblib
 
-from backend.ml.preprocessing import extract_features_from_dict
+try:
+    from backend.ml.preprocessing import extract_features_from_dict
+except ImportError:
+    from ml.preprocessing import extract_features_from_dict
 
 logger = logging.getLogger("rakshapay.ml")
 
