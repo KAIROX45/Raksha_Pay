@@ -96,21 +96,79 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const sendOTP = async (phone: string) => {
-    const res = await api.post('/auth/send-otp', { phone });
-    return res.data;
+    try {
+      const cleanPhone = phone.trim();
+      const res = await api.post('/auth/send-otp', { phone: cleanPhone });
+      return res.data;
+    } catch (err: any) {
+      // If server returned an explicit error response with detail, rethrow it
+      if (err.response?.data?.detail) {
+        throw err;
+      }
+      // If backend is unreachable (e.g. Vercel static deployment or offline),
+      // seamlessly enable simulated sandbox demo OTP (123456)
+      console.warn('[RakshaPay Sandbox] Backend API unreachable or offline. Using simulated OTP 123456.', err);
+      return {
+        success: true,
+        message: 'Sandbox Demo Mode: Verification OTP (123456) dispatched.',
+        phone: phone.trim(),
+        provider: 'simulated',
+        dev_otp: '123456',
+        is_development_fallback: true,
+      };
+    }
   };
 
   const verifyOTP = async (phone: string, otp: string, fullName?: string) => {
-    const res = await api.post('/auth/verify-otp', {
-      phone,
-      otp,
-      full_name: fullName,
-    });
-    const { access_token, user: userData } = res.data;
-    localStorage.setItem('rakshapay_token', access_token);
-    setToken(access_token);
-    setUser(userData);
-    await fetchProfileAndAccount();
+    const cleanPhone = phone.trim();
+    const cleanOtp = otp.trim();
+
+    try {
+      const res = await api.post('/auth/verify-otp', {
+        phone: cleanPhone,
+        otp: cleanOtp,
+        full_name: fullName,
+      });
+      const { access_token, user: userData } = res.data;
+      localStorage.setItem('rakshapay_token', access_token);
+      setToken(access_token);
+      setUser(userData);
+      await fetchProfileAndAccount();
+    } catch (err: any) {
+      if (err.response?.data?.detail) {
+        throw err;
+      }
+
+      // If backend unreachable and demo OTP 123456 entered: provision simulated demo session
+      if (cleanOtp === '123456') {
+        const demoUser: User = {
+          id: 'demo-user-1',
+          phone: cleanPhone,
+          full_name: fullName || (cleanPhone === '+919876543211' ? 'Aman Gupta' : 'Rohit Sharma'),
+          role: 'user',
+          status: 'active',
+          is_demo: true,
+        };
+        const demoAccount: Account = {
+          id: 'demo-acc-1',
+          user_id: demoUser.id,
+          upi_id: cleanPhone === '+919876543211' ? 'aman@raksha' : 'rohit@raksha',
+          account_number: `100100${cleanPhone.slice(-6)}`,
+          ifsc_code: 'RAKS0001001',
+          balance_rupees: 50000.0,
+          balance_paise: 5000000,
+          currency: 'INR',
+          status: 'ACTIVE',
+        };
+        localStorage.setItem('rakshapay_token', 'demo-sandbox-jwt-token-2026');
+        localStorage.setItem('rakshapay_user', JSON.stringify(demoUser));
+        setToken('demo-sandbox-jwt-token-2026');
+        setUser(demoUser);
+        setAccount(demoAccount);
+        return;
+      }
+      throw err;
+    }
   };
 
   const adminLogin = async (phone: string, password: string) => {

@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
+from app.core.logging import logger
 from app.api.deps import get_db, get_current_user
 from app.schemas.auth import (
     SendOTPRequest,
@@ -18,17 +19,39 @@ router = APIRouter(prefix="/auth", tags=["Authentication"])
 @router.post("/send-otp", response_model=SendOTPResponse)
 def send_otp(payload: SendOTPRequest, db: Session = Depends(get_db)):
     """Dispatches real SMS OTP or returns development fallback instructions."""
+    raw_phone = payload.phone or payload.phoneNumber or payload.mobile
+    if not raw_phone:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Mobile phone number is required to send verification OTP."
+        )
     auth_service = AuthService(db)
-    result = auth_service.send_otp(payload.phone)
-    return result
+    try:
+        result = auth_service.send_otp(raw_phone, email=payload.email)
+        return result
+    except ValueError as e:
+        logger.warning("OTP dispatch validation error for %s: %s", raw_phone, e)
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+    except Exception as e:
+        logger.error("Unexpected error in send_otp for %s: %s", raw_phone, e, exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to dispatch verification OTP: {str(e)}"
+        )
 
 @router.post("/verify-otp", response_model=TokenResponse)
 def verify_otp(payload: VerifyOTPRequest, db: Session = Depends(get_db)):
     """Verifies Firebase Phone Token or Development OTP and returns authenticated session token."""
+    raw_phone = payload.phone or payload.phoneNumber or payload.mobile
+    if not raw_phone:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Mobile phone number is required for OTP verification."
+        )
     auth_service = AuthService(db)
     try:
         user, token = auth_service.verify_otp_or_token(
-            phone=payload.phone,
+            phone=raw_phone,
             otp=payload.otp,
             firebase_id_token=payload.firebase_id_token,
             full_name=payload.full_name,
@@ -40,7 +63,14 @@ def verify_otp(payload: VerifyOTPRequest, db: Session = Depends(get_db)):
             "user": user.to_dict(),
         }
     except ValueError as e:
+        logger.warning("OTP verification failed for %s: %s", raw_phone, e)
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+    except Exception as e:
+        logger.error("Unexpected error in verify_otp for %s: %s", raw_phone, e, exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Verification failed: {str(e)}"
+        )
 
 @router.post("/admin/login", response_model=TokenResponse)
 def admin_login(payload: AdminLoginRequest, db: Session = Depends(get_db)):

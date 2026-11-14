@@ -8,19 +8,27 @@ class TokenResponse(BaseModel):
     user: dict
 
 class VerifyOTPRequest(BaseModel):
-    phone: str = Field(..., description="Mobile number with country code, e.g. +919876543210")
+    phone: Optional[str] = Field(None, description="Mobile number with country code, e.g. +919876543210")
+    phoneNumber: Optional[str] = Field(None, description="Alias for phone")
+    mobile: Optional[str] = Field(None, description="Alias for phone")
     otp: Optional[str] = Field(None, description="6-digit OTP code")
     firebase_id_token: Optional[str] = Field(None, description="Firebase ID token from real SMS verification")
     full_name: Optional[str] = Field(None, description="User full name for first-time registration")
 
 class SendOTPRequest(BaseModel):
-    phone: str = Field(..., description="Mobile number with country code, e.g. +919876543210")
+    phone: Optional[str] = Field(None, description="Mobile number with country code, e.g. +919876543210")
+    phoneNumber: Optional[str] = Field(None, description="Alias for phone")
+    mobile: Optional[str] = Field(None, description="Alias for phone")
+    email: Optional[str] = Field(None, description="Optional email address for OTP delivery")
 
 class SendOTPResponse(BaseModel):
     success: bool
     message: str
-    is_development_fallback: bool = False
-    dev_otp: Optional[str] = None  # Only present when Firebase SMS provider is not configured
+    phone: Optional[str] = None
+    provider: Optional[str] = "simulated"
+    is_development_fallback: bool = True
+    dev_otp: Optional[str] = None
+    expires_in_seconds: int = 600
 
 class AdminLoginRequest(BaseModel):
     phone: str

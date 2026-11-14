@@ -32,8 +32,9 @@ export const LoginPage: React.FC = () => {
         }`
       );
     } catch (err: any) {
+      const serverMsg = err.response?.data?.detail;
       setError(
-        err.response?.data?.detail || 'Failed to dispatch verification OTP. Please try again.'
+        serverMsg || err.message || 'Failed to dispatch verification OTP. Please check your network and mobile number.'
       );
     } finally {
       setIsLoading(false);

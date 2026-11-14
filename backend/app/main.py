@@ -33,6 +33,14 @@ from app.api.v1.analyze import router as analyze_router
 # Initialize database tables on startup
 Base.metadata.create_all(bind=engine)
 logger.info("Database schema initialized successfully.")
+logger.info(
+    "[CONFIG AUDIT] Env: %s | DB: %s | AI: %s | SMS Gateway: %s | SMTP: %s",
+    settings.ENV,
+    "PostgreSQL" if "postgres" in settings.DATABASE_URL else "SQLite",
+    "Gemini Active" if settings.GEMINI_API_KEY else "Rule-based Fallback Active",
+    "Twilio" if settings.TWILIO_ACCOUNT_SID else ("Fast2SMS" if settings.FAST2SMS_API_KEY else ("Firebase" if settings.FIREBASE_PROJECT_ID else "Simulated Sandbox (OTP 123456)")),
+    "Configured" if settings.SMTP_HOST else "Unconfigured",
+)
 
 app = FastAPI(
     title=settings.PROJECT_NAME,

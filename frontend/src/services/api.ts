@@ -1,10 +1,12 @@
 import axios from 'axios';
 
+const metaEnv = (import.meta as any).env || {};
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: metaEnv.VITE_API_URL || metaEnv.VITE_API_BASE_URL || '/api',
   headers: {
     'Content-Type': 'application/json',
   },
+  timeout: 15000,
 });
 
 // Request interceptor: inject JWT token
